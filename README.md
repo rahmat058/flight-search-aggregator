@@ -30,7 +30,7 @@ A modern flight search and booking demo built with **Next.js 16**, **React 19**,
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 24+
 - pnpm (recommended)
 
 ### Install & run
