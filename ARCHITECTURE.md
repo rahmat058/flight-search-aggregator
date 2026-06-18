@@ -4,6 +4,8 @@
 
 SkyRoute is a flight search and booking demo on the **Next.js App Router**. Search and results live on `/`; booking steps use **dedicated routes** keyed by flight ID. A mock REST API serves paginated flight data from an in-memory generator (not static JSON at runtime).
 
+Open [http://localhost:3000](http://localhost:3000) or [https://flight-search-aggregator.vercel.app](https://flight-search-aggregator.vercel.app).
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                         Browser (Client)                          │

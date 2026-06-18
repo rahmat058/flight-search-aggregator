@@ -40,7 +40,7 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) or [https://flight-search-aggregator.vercel.app](https://flight-search-aggregator.vercel.app).
 
 ### Default search
 
@@ -140,8 +140,12 @@ Query parameters:
 | `page`        | no       | Defaults to `1`                       |
 | `limit`       | no       | Defaults to `3` (max `20`)            |
 
+Use `http://localhost:3000` for local development or `https://flight-search-aggregator.vercel.app` for the deployed app.
+
 ```bash
 curl "http://localhost:3000/api/flights?origin=JFK&destination=LAX&date=2026-07-15&passengers=1&page=1&limit=3"
+or
+curl "https://flight-search-aggregator.vercel.app/api/flights?origin=JFK&destination=LAX&date=2026-07-15&passengers=1&page=1&limit=3"
 ```
 
 Response includes paginated `flights` and `meta` (`total`, `page`, `limit`, `hasMore`, `airlines`, `priceRange`, …).
@@ -154,8 +158,10 @@ Returns a single flight resolved from the mock catalog (with date remapping appl
 
 Creates a mock booking.
 
+Use `http://localhost:3000` for local development or `https://flight-search-aggregator.vercel.app` for the deployed app.
+
 ```bash
-curl -X POST http://localhost:3000/api/flights \
+curl -X POST https://flight-search-aggregator.vercel.app/api/flights \
   -H "Content-Type: application/json" \
   -d '{"flightId":"flt-JFK-LAX-20260715-00","passenger":{"firstName":"John","lastName":"Doe","email":"john@example.com","phone":"5551234567"}}'
 ```
