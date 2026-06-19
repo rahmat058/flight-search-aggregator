@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3000'
+/** Dedicated port so E2E does not reuse `pnpm dev` on :3000 (breaks client-side search in tests). */
+const e2ePort = process.env.PLAYWRIGHT_PORT ?? '3100'
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${e2ePort}`
 const useExternalBaseUrl = Boolean(process.env.PLAYWRIGHT_BASE_URL)
 
 export default defineConfig({
@@ -26,9 +28,9 @@ export default defineConfig({
     ? {}
     : {
         webServer: {
-          command: 'pnpm run build && PORT=3000 pnpm run start',
+          command: `pnpm run build && PORT=${e2ePort} pnpm run start`,
           url: baseURL,
-          reuseExistingServer: !process.env.CI,
+          reuseExistingServer: false,
           timeout: 10 * 60 * 1000,
         },
       }),

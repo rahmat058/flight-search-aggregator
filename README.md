@@ -70,7 +70,8 @@ Click **Search** to fetch the first page of results. Use **Load more**, scroll t
 | `pnpm lint`             | Run ESLint                                     |
 | `pnpm test`             | Run unit tests (Vitest)                        |
 | `pnpm test:watch`       | Run unit tests in watch mode                   |
-| `pnpm test:e2e`         | Run Playwright E2E tests                       |
+| `pnpm test:e2e`         | Run Playwright E2E tests (prod server on port **3100**) |
+| `pnpm test:e2e:install` | Download Playwright Chromium browser (also runs on `pnpm install`) |
 | `pnpm test:all`         | Run all tests                                  |
 | `pnpm generate:flights` | Export template catalog to `data/flights.json` |
 
