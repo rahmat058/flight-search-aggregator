@@ -1,8 +1,8 @@
-import type { Flight, SearchParams } from '@/lib/types/flight'
-import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '@/lib/store'
 import { FLIGHTS_PAGE_SIZE } from '@/lib/utils/pagination'
 import { getSearchDateError } from '@/lib/utils/searchDate'
+import type { Flight, SearchParams } from '@/lib/types/flight'
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 
 interface SearchMeta {
   total: number

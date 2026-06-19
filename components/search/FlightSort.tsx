@@ -1,10 +1,10 @@
 'use client'
 
 import { ArrowUpDown } from 'lucide-react'
-import type { SortOption } from '@/lib/types/flight'
 import { Select } from '@/components/ui/Select'
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
+import type { SortOption } from '@/lib/types/flight'
 import { setSortBy } from '@/lib/store/slices/filtersSlice'
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: 'price-asc', label: 'Price: Low to High' },
