@@ -2,26 +2,17 @@
 
 import type { Flight } from '@/lib/types/flight'
 import { Button } from '@/components/ui/Button'
-import { useAppDispatch } from '@/lib/store/hooks'
-import { setSelectedFlight } from '@/lib/store/slices/bookingSlice'
-import { useRouter } from 'next/navigation'
 import { ArrowRight, Clock, Plane, Users } from 'lucide-react'
 import { formatDuration, formatPrice, formatTime, getStopsLabel } from '@/lib/utils/flightHelpers'
 
 interface FlightCardProps {
   flight: Flight
   passengers: number
+  onSelect: (flight: Flight) => void
 }
 
-export function FlightCard({ flight, passengers }: FlightCardProps) {
-  const dispatch = useAppDispatch()
-  const router = useRouter()
+export function FlightCard({ flight, passengers, onSelect }: FlightCardProps) {
   const totalPrice = flight.price * passengers
-
-  const handleSelect = () => {
-    dispatch(setSelectedFlight(flight))
-    router.push(`/flights/${flight.id}/review`)
-  }
 
   return (
     <article
@@ -87,7 +78,7 @@ export function FlightCard({ flight, passengers }: FlightCardProps) {
             {flight.availableSeats} seats left
           </p>
         </div>
-        <Button size="sm" onClick={handleSelect} data-testid="select-flight-btn">
+        <Button size="sm" onClick={() => onSelect(flight)} data-testid="select-flight-btn">
           Select
           <ArrowRight className="h-3.5 w-3.5" />
         </Button>

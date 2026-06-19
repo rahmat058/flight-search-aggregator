@@ -29,9 +29,10 @@ export const getDepartureHour = (isoString: string): number => new Date(isoStrin
 export const matchesDepartureWindow = (isoString: string, window: FlightFilters['departureWindow']): boolean => {
   if (window === 'any') return true
   const hour = getDepartureHour(isoString)
+  if (window === 'early-morning') return hour >= 0 && hour < 5
   if (window === 'morning') return hour >= 5 && hour < 12
-  if (window === 'afternoon') return hour >= 12 && hour < 17
-  return hour >= 17 || hour < 5
+  if (window === 'afternoon') return hour >= 12 && hour < 18
+  return hour >= 18 && hour < 24
 }
 
 export const filterFlights = (flights: Flight[], filters: FlightFilters): Flight[] =>

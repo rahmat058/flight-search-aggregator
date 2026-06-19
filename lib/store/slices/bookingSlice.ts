@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
-import type { BookingDetails, BookingPassenger, Flight } from '@/lib/types/flight'
+import type { BookingDetails, BookingPassenger, Flight, PaymentMethod } from '@/lib/types/flight'
 
 interface BookingState {
   selectedFlight: Flight | null
   passenger: BookingPassenger
+  paymentMethod: PaymentMethod | null
   booking: BookingDetails | null
   status: 'idle' | 'submitting' | 'succeeded' | 'failed'
   error: string | null
@@ -20,6 +21,7 @@ const emptyPassenger: BookingPassenger = {
 const initialState: BookingState = {
   selectedFlight: null,
   passenger: emptyPassenger,
+  paymentMethod: null,
   booking: null,
   status: 'idle',
   error: null,
@@ -28,7 +30,10 @@ const initialState: BookingState = {
 
 export const submitBooking = createAsyncThunk(
   'booking/submitBooking',
-  async ({ flight, passenger }: { flight: Flight; passenger: BookingPassenger }, { rejectWithValue }) => {
+  async (
+    { flight, passenger, paymentMethod }: { flight: Flight; passenger: BookingPassenger; paymentMethod: PaymentMethod },
+    { rejectWithValue },
+  ) => {
     const response = await fetch('/api/flights', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -45,6 +50,7 @@ export const submitBooking = createAsyncThunk(
       flight: data.flight as Flight,
       passenger: data.passenger as BookingPassenger,
       bookedAt: data.bookedAt as string,
+      paymentMethod,
     }
   },
 )
@@ -65,6 +71,10 @@ const bookingSlice = createSlice({
         delete state.validationErrors[key]
       }
     },
+    setPaymentMethod(state, action: PayloadAction<PaymentMethod>) {
+      state.paymentMethod = action.payload
+      state.error = null
+    },
     setValidationErrors(state, action: PayloadAction<BookingState['validationErrors']>) {
       state.validationErrors = action.payload
     },
@@ -76,6 +86,7 @@ const bookingSlice = createSlice({
     resetBookingFlow(state) {
       state.selectedFlight = null
       state.passenger = emptyPassenger
+      state.paymentMethod = null
       state.booking = null
       state.status = 'idle'
       state.error = null
@@ -94,9 +105,11 @@ const bookingSlice = createSlice({
           ...action.payload.passenger,
           bookingReference: action.payload.bookingReference,
           bookedAt: action.payload.bookedAt,
+          paymentMethod: action.payload.paymentMethod,
         }
         state.selectedFlight = action.payload.flight
         state.passenger = action.payload.passenger
+        state.paymentMethod = action.payload.paymentMethod
       })
       .addCase(submitBooking.rejected, (state, action) => {
         state.status = 'failed'
@@ -108,6 +121,7 @@ const bookingSlice = createSlice({
 export const {
   setSelectedFlight,
   updatePassenger,
+  setPaymentMethod,
   setValidationErrors,
   clearSelectedFlight,
   resetBookingFlow,

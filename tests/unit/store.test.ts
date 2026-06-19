@@ -120,6 +120,15 @@ describe('bookingSlice', () => {
   })
 
   it('stores booking details after successful submit', () => {
+    const paymentMethod = {
+      id: 'visa' as const,
+      label: 'Visa Cards',
+      brand: 'Visa',
+      cardholder: 'John Doe',
+      last4: '4242',
+      expiry: '06/28',
+    }
+
     const state = bookingReducer(
       undefined,
       submitBooking.fulfilled(
@@ -128,13 +137,15 @@ describe('bookingSlice', () => {
           flight: mockFlight,
           passenger: { firstName: 'John', lastName: 'Doe', email: 'john@test.com', phone: '555' },
           bookedAt: '2026-07-15T12:00:00.000Z',
+          paymentMethod,
         },
         '',
-        { flight: mockFlight, passenger: mockFlight } as never,
+        { flight: mockFlight, passenger: mockFlight, paymentMethod } as never,
       ),
     )
 
     expect(state.booking?.bookingReference).toBe('SKY123')
+    expect(state.booking?.paymentMethod?.brand).toBe('Visa')
     expect(state.status).toBe('succeeded')
   })
 })

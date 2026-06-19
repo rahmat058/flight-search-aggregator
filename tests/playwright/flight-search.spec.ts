@@ -17,8 +17,8 @@ test.describe('Flight Search Aggregator', () => {
     await expect(page.getByTestId('flight-card').first()).toBeVisible()
 
     await page.getByTestId('select-flight-btn').first().click()
-    await expect(page).toHaveURL(/\/flights\/[^/]+\/review/)
     await expect(page.getByTestId('booking-review')).toBeVisible()
+    await expect(page).toHaveURL('/')
     await page.getByTestId('proceed-booking-btn').click()
 
     await expect(page).toHaveURL(/\/flights\/[^/]+\/book/)
@@ -29,9 +29,27 @@ test.describe('Flight Search Aggregator', () => {
     await page.getByTestId('phone-input').fill('+1 (555) 123-4567')
     await page.getByTestId('submit-booking-btn').click()
 
+    await expect(page).toHaveURL(/\/flights\/[^/]+\/payment/, { timeout: 10000 })
+    await expect(page.getByTestId('booking-payment')).toBeVisible()
+    await page.getByTestId('payment-terms-checkbox').check()
+    await page.getByTestId('payment-method-visa').click()
+    await page.getByTestId('submit-payment-btn').click()
+
     await expect(page).toHaveURL(/\/flights\/[^/]+\/confirmation/, { timeout: 10000 })
     await expect(page.getByTestId('booking-confirmation')).toBeVisible()
     await expect(page.getByTestId('booking-ref')).toBeVisible()
+  })
+
+  test('opens booking review sidebar without leaving search page', async ({ page }) => {
+    await page.getByTestId('date-input').fill('2026-07-15')
+    await page.getByTestId('search-btn').click()
+
+    await expect(page.getByTestId('flight-results')).toBeVisible({ timeout: 15000 })
+    await page.getByTestId('select-flight-btn').first().click()
+
+    await expect(page.getByTestId('booking-review-sidebar')).toBeVisible()
+    await expect(page.getByTestId('booking-review')).toBeVisible()
+    await expect(page).toHaveURL('/')
   })
 
   test('shows empty state for route with no flights', async ({ page }) => {
@@ -41,6 +59,21 @@ test.describe('Flight Search Aggregator', () => {
     await page.getByTestId('search-btn').click()
 
     await expect(page.getByTestId('empty-state')).toBeVisible({ timeout: 15000 })
+  })
+
+  test('shows filtered empty state when no flights match filters', async ({ page }) => {
+    await page.getByTestId('date-input').fill('2026-07-15')
+    await page.getByTestId('search-btn').click()
+
+    await expect(page.getByTestId('flight-results')).toBeVisible({ timeout: 15000 })
+    await page.getByTestId('price-filter').evaluate((input) => {
+      const el = input as HTMLInputElement
+      el.value = '1'
+      el.dispatchEvent(new Event('input', { bubbles: true }))
+      el.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+
+    await expect(page.getByTestId('filtered-empty-state')).toBeVisible({ timeout: 10000 })
   })
 
   test('shows error state when search fails', async ({ page }) => {
@@ -84,7 +117,7 @@ test.describe('Flight Search Aggregator', () => {
     const totalCards = await page.getByTestId('flight-card').count()
     expect(totalCards).toBeGreaterThanOrEqual(30)
 
-    await page.getByRole('button', { name: 'Evening' }).click()
+    await page.getByRole('radio', { name: /Evening/i }).check()
 
     const filteredCards = await page.getByTestId('flight-card').count()
     expect(filteredCards).toBeGreaterThan(0)
@@ -92,13 +125,13 @@ test.describe('Flight Search Aggregator', () => {
     await expect(page.getByTestId('filter-summary')).toContainText('match your filters')
   })
 
-  test('disables confirm booking until form is valid', async ({ page }) => {
+  test('disables passenger continue until form is valid', async ({ page }) => {
     await page.getByTestId('date-input').fill('2026-07-15')
     await page.getByTestId('search-btn').click()
     await expect(page.getByTestId('flight-results')).toBeVisible({ timeout: 15000 })
 
     await page.getByTestId('select-flight-btn').first().click()
-    await expect(page).toHaveURL(/\/flights\/[^/]+\/review/)
+    await expect(page.getByTestId('booking-review')).toBeVisible()
     await page.getByTestId('proceed-booking-btn').click()
     await expect(page).toHaveURL(/\/flights\/[^/]+\/book/)
     await expect(page.getByTestId('booking-form')).toBeVisible()
@@ -111,5 +144,27 @@ test.describe('Flight Search Aggregator', () => {
     await page.getByTestId('phone-input').fill('+1 (555) 123-4567')
 
     await expect(page.getByTestId('submit-booking-btn')).toBeEnabled()
+  })
+
+  test('disables payment submit until terms are accepted', async ({ page }) => {
+    await page.getByTestId('date-input').fill('2026-07-15')
+    await page.getByTestId('search-btn').click()
+    await expect(page.getByTestId('flight-results')).toBeVisible({ timeout: 15000 })
+
+    await page.getByTestId('select-flight-btn').first().click()
+    await page.getByTestId('proceed-booking-btn').click()
+    await expect(page).toHaveURL(/\/flights\/[^/]+\/book/)
+
+    await page.getByTestId('first-name-input').fill('John')
+    await page.getByTestId('last-name-input').fill('Doe')
+    await page.getByTestId('email-input').fill('john.doe@example.com')
+    await page.getByTestId('phone-input').fill('+1 (555) 123-4567')
+    await page.getByTestId('submit-booking-btn').click()
+
+    await expect(page).toHaveURL(/\/flights\/[^/]+\/payment/, { timeout: 10000 })
+    await expect(page.getByTestId('submit-payment-btn')).toBeDisabled()
+
+    await page.getByTestId('payment-terms-checkbox').check()
+    await expect(page.getByTestId('submit-payment-btn')).toBeEnabled()
   })
 })

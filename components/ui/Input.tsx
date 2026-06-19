@@ -5,7 +5,7 @@ export const fieldInputClasses =
   'cursor-pointer rounded-xl border border-white/60 bg-white/80 px-4 py-2.5 text-slate-800 shadow-sm backdrop-blur-sm transition-all duration-200 placeholder:text-slate-400 focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-200 focus:outline-none disabled:cursor-not-allowed w-full'
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string
+  label?: React.ReactNode
   error?: string
   icon?: React.ReactNode
 }
@@ -14,7 +14,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   { label, error, icon, className, id, type, ...props },
   ref,
 ) {
-  const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-')
+  const inputId = id ?? (typeof label === 'string' ? label.toLowerCase().replace(/\s+/g, '-') : undefined)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const setRefs = (node: HTMLInputElement | null) => {

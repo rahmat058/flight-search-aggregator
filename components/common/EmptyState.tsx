@@ -1,6 +1,10 @@
+'use client'
+
 import type { ReactNode } from 'react'
-import { SearchX } from 'lucide-react'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import { StatusPanel } from './StatusPanel'
+
+const EMPTY_ANIMATION_SRC = '/animations/Empty.lottie'
 
 interface EmptyStateProps {
   title: string
@@ -11,8 +15,9 @@ interface EmptyStateProps {
 export function EmptyState({ title, description, testId = 'empty-state' }: EmptyStateProps) {
   return (
     <StatusPanel
-      icon={<SearchX className="h-8 w-8 text-amber-500" />}
-      iconRingClassName="bg-amber-100"
+      card={false}
+      iconRing={false}
+      icon={<DotLottieReact src={EMPTY_ANIMATION_SRC} loop autoplay className="h-64 w-64" aria-label="No results" />}
       title={title}
       description={description}
       testId={testId}

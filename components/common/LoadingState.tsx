@@ -1,6 +1,10 @@
+'use client'
+
 import type { ReactNode } from 'react'
-import { Loader2 } from 'lucide-react'
 import { StatusPanel } from './StatusPanel'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
+
+const LOADING_ANIMATION_SRC = '/animations/Plane.lottie'
 
 interface LoadingStateProps {
   title: string
@@ -13,7 +17,7 @@ export function LoadingState({ title, description, testId = 'loading-state' }: L
     <StatusPanel
       card={false}
       iconRing={false}
-      icon={<Loader2 className="h-12 w-12 animate-spin text-indigo-500" />}
+      icon={<DotLottieReact src={LOADING_ANIMATION_SRC} loop autoplay className="h-80 w-80" aria-label="Loading" />}
       title={title}
       description={description}
       titleClassName="font-medium text-slate-600"

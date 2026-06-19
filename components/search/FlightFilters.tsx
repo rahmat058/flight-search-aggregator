@@ -1,16 +1,7 @@
 'use client'
 
+import { cn } from '@/utils/twMerge'
 import { useMemo } from 'react'
-import {
-  Banknote,
-  Building2,
-  Clock,
-  RotateCcw,
-  SlidersHorizontal,
-  Sun,
-  Sunrise,
-  Sunset,
-} from 'lucide-react'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
 import {
@@ -22,21 +13,20 @@ import {
 } from '@/lib/store/slices/filtersSlice'
 import { filterFlights } from '@/lib/utils/flightHelpers'
 import { getFilterSidebarSummary, hasActiveFilters } from '@/lib/utils/flightResultsSummary'
-import { cn } from '@/utils/twMerge'
+import { Banknote, Building2, Clock, CloudMoon, RotateCcw, SlidersHorizontal, Sun, Sunrise, Sunset } from 'lucide-react'
 
 const departureWindows = [
-  { value: 'any', label: 'Any', icon: Clock },
-  { value: 'morning', label: 'Morning', icon: Sunrise },
-  { value: 'afternoon', label: 'Afternoon', icon: Sun },
-  { value: 'evening', label: 'Evening', icon: Sunset },
+  { value: 'any', label: 'Any time', timeRange: 'All departures', icon: Clock },
+  { value: 'early-morning', label: 'Early Morning', timeRange: '00:00 – 04:59', icon: CloudMoon },
+  { value: 'morning', label: 'Morning', timeRange: '05:00 – 11:59', icon: Sunrise },
+  { value: 'afternoon', label: 'Afternoon', timeRange: '12:00 – 17:59', icon: Sun },
+  { value: 'evening', label: 'Evening', timeRange: '18:00 – 23:59', icon: Sunset },
 ] as const
 
 const filterChipClasses = (active: boolean) =>
   cn(
     'cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium transition-all',
-    active
-      ? 'bg-indigo-500 text-white shadow-sm shadow-indigo-500/25'
-      : 'bg-white/70 text-slate-600 hover:bg-white',
+    active ? 'bg-indigo-500 text-white shadow-sm shadow-indigo-500/25' : 'bg-white/70 text-slate-600 hover:bg-white',
   )
 
 const sectionLabelClasses = 'mb-2 flex items-center gap-1.5 text-sm font-medium text-slate-600'
@@ -114,8 +104,7 @@ export function FlightFilters() {
                 key={String(opt.value)}
                 type="button"
                 onClick={() => dispatch(setMaxStops(opt.value))}
-                className={filterChipClasses(filters.maxStops === opt.value)}
-              >
+                className={filterChipClasses(filters.maxStops === opt.value)}>
                 {opt.label}
               </button>
             ))}
@@ -124,24 +113,39 @@ export function FlightFilters() {
 
         <div>
           <p className={sectionLabelClasses}>Departure time</p>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-col gap-2" role="radiogroup" aria-label="Departure time">
             {departureWindows.map((opt) => {
               const Icon = opt.icon
               const active = filters.departureWindow === opt.value
               return (
-                <button
+                <label
                   key={opt.value}
-                  type="button"
-                  onClick={() => dispatch(setDepartureWindow(opt.value))}
                   className={cn(
-                    filterChipClasses(active),
-                    'flex items-center gap-1',
-                    active && 'bg-violet-500 shadow-violet-500/25',
-                  )}
-                >
-                  <Icon className="h-3.5 w-3.5 shrink-0" />
-                  {opt.label}
-                </button>
+                    'flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition-all',
+                    active
+                      ? 'border-indigo-300 bg-indigo-50 shadow-sm shadow-indigo-500/10'
+                      : 'border-slate-100 bg-white/70 hover:border-indigo-200 hover:bg-white',
+                  )}>
+                  <input
+                    type="radio"
+                    name="departure-window"
+                    value={opt.value}
+                    checked={active}
+                    onChange={() => dispatch(setDepartureWindow(opt.value))}
+                    className="sr-only"
+                  />
+                  <span
+                    className={cn(
+                      'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors',
+                      active ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-500',
+                    )}>
+                    <Icon className="h-4 w-4 shrink-0" />
+                  </span>
+                  <span className="min-w-0 text-left">
+                    <span className="block text-sm font-medium text-slate-800">{opt.label}</span>
+                    <span className="block text-xs text-slate-500">{opt.timeRange}</span>
+                  </span>
+                </label>
               )
             })}
           </div>

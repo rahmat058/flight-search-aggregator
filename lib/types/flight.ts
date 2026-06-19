@@ -32,7 +32,7 @@ export interface FlightFilters {
   maxPrice: number | null
   maxStops: number | null
   airlines: string[]
-  departureWindow: 'any' | 'morning' | 'afternoon' | 'evening'
+  departureWindow: 'any' | 'early-morning' | 'morning' | 'afternoon' | 'evening'
 }
 
 export interface BookingPassenger {
@@ -42,9 +42,21 @@ export interface BookingPassenger {
   phone: string
 }
 
+export type PaymentMethodId = 'amex' | 'visa' | 'mastercard'
+
+export interface PaymentMethod {
+  id: PaymentMethodId
+  label: string
+  brand: string
+  cardholder: string
+  last4: string
+  expiry: string
+}
+
 export interface BookingDetails extends BookingPassenger {
   bookingReference: string
   bookedAt: string
+  paymentMethod?: PaymentMethod
 }
 
 export interface Airport {

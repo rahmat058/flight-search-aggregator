@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/store/hooks'
 import { resetBookingFlow } from '@/lib/store/slices/bookingSlice'
 import { resetSearch } from '@/lib/store/slices/searchSlice'
 import { formatDate, formatPrice, formatTime } from '@/lib/utils/flightHelpers'
+import { buildPaymentBreakdown } from '@/lib/utils/paymentBreakdown'
 import { getAirportLabel } from '@/data/airports'
 import { Button } from '@/components/ui/Button'
 
@@ -18,7 +19,10 @@ export function BookingConfirmation() {
   if (!booking || !selectedFlight) return null
 
   const passengers = params.passengers || 1
-  const totalPrice = selectedFlight.price * passengers
+  const ticketTotal = selectedFlight.price * passengers
+  const paidTotal = booking.paymentMethod
+    ? buildPaymentBreakdown(ticketTotal).totalPayable
+    : ticketTotal
 
   const handleNewSearch = () => {
     router.replace('/')
@@ -77,9 +81,17 @@ export function BookingConfirmation() {
                 {formatDate(selectedFlight.departureTime)} at {formatTime(selectedFlight.departureTime)}
               </span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500">Payment method</span>
+              <span className="font-medium text-slate-800">
+                {booking.paymentMethod
+                  ? `${booking.paymentMethod.brand} •••• ${booking.paymentMethod.last4}`
+                  : '—'}
+              </span>
+            </div>
             <div className="flex justify-between border-t border-slate-100 pt-3">
               <span className="font-semibold text-slate-800">Total paid</span>
-              <span className="font-bold text-indigo-600">{formatPrice(totalPrice)}</span>
+              <span className="font-bold text-indigo-600">{formatPrice(paidTotal)}</span>
             </div>
           </div>
 

@@ -3,7 +3,7 @@ import { FlightBookingGate } from '@/components/booking/FlightBookingGate'
 
 export default function BookFlightPage() {
   return (
-    <FlightBookingGate>
+    <FlightBookingGate align="start">
       <BookingForm />
     </FlightBookingGate>
   )
