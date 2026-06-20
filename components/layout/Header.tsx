@@ -20,10 +20,11 @@ export function Header() {
           </div>
         </Link>
         <div className="hidden items-center gap-2 text-sm text-slate-500 sm:flex">
-          <span className="flex items-center gap-1.5 rounded-full bg-teal-100 px-3 py-1 text-teal-700">
+      
+          <Link href="https://flight-search-aggregator.vercel.app/api/flights?origin=JFK&destination=LAX&date=2026-07-15&passengers=1&page=1&limit=3" target="_blank" className="flex items-center gap-1.5 rounded-full bg-teal-100 px-3 py-1 text-teal-700">
             <Radio className="h-3 w-3" />
             Live mock data
-          </span>
+          </Link>
         </div>
       </div>
     </header>
