@@ -21,7 +21,9 @@ export function FlightResultsPagination({ displayedCount }: FlightResultsPaginat
   const sentinelRef = useRef<HTMLDivElement>(null)
   const isLoadingRef = useRef(isLoading)
 
-  isLoadingRef.current = isLoading
+  useEffect(() => {
+    isLoadingRef.current = isLoading
+  }, [isLoading])
 
   useEffect(() => {
     if (!hasMore) return
